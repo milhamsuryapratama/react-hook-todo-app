@@ -36,6 +36,7 @@ function App() {
   return (
     <div className="App">
       <h2>Todo App</h2>
+      <p>{todos.length} Todos</p>
       <div className="todo-list">
         {todos.map((todo, index) => (
           <Todo
