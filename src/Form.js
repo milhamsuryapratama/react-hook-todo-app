@@ -10,6 +10,7 @@ function ControlledForm() {
     )
 
     const [eBiodata, setEditBiodata] = useState();
+    const [indexEdit, setIndexEdit] = useState();
 
     const addBiodata = data => {
         const newBiodata = [...biodata, data];
@@ -19,6 +20,14 @@ function ControlledForm() {
     const editBiodata = index => {
         const edtBiodata = [...biodata];
         setEditBiodata(edtBiodata[index]);
+        setIndexEdit(index);
+    }
+
+    const updateBiodata = data => {
+        console.log(data)
+        const newBiodata = [...biodata];
+        newBiodata[data.indexUpdate] = data.data;
+        setBiodata(newBiodata)
     }
 
     useEffect(() => {
@@ -39,7 +48,7 @@ function ControlledForm() {
                         />
                     )) : <p>No Biodata</p>
             }
-            <Form addBiodata={addBiodata} eBiodata={eBiodata} />
+            <Form addBiodata={addBiodata} eBiodata={{ eBiodata, indexEdit }} updateBiodata={updateBiodata} />
         </div>
     )
 
@@ -53,13 +62,14 @@ function Display({ biodata, index, editBiodata }) {
     )
 }
 
-function Form({ addBiodata, eBiodata, indexEdit }) {
+function Form({ addBiodata, updateBiodata, eBiodata }) {
 
     const [nama, setNama] = useState("");
     const [alamat, setAlamat] = useState("");
     const [jk, setJk] = useState("");
     const [status, setStatus] = useState("");
     const [edited, setEdited] = useState(false);
+    const [indexUpdate, setIndexUpdate] = useState();
 
     const setVal = (eBiodata) => {
         if (eBiodata === undefined) {
@@ -73,8 +83,13 @@ function Form({ addBiodata, eBiodata, indexEdit }) {
         }
     }
 
+    const setIndex = (index) => {
+        setIndexUpdate(index);
+    }
+
     useEffect(() => {
-        setVal(eBiodata);
+        setIndex(eBiodata.indexEdit);
+        setVal(eBiodata.eBiodata);
     }, [eBiodata])
 
     const cancleUpdate = () => {
@@ -92,6 +107,16 @@ function Form({ addBiodata, eBiodata, indexEdit }) {
         setAlamat("");
         setJk("");
         setStatus("");
+    }
+
+    const handleUpdate = () => {
+        const data = { nama, alamat, jk, status };
+        updateBiodata({ data, indexUpdate });
+        setNama("");
+        setAlamat("");
+        setJk("");
+        setStatus("");
+        setEdited(false);
     }
 
     return (
@@ -130,7 +155,7 @@ function Form({ addBiodata, eBiodata, indexEdit }) {
                 <option value="Duda" selected={status === "Duda" ? true : false}>Duda</option>
             </select>
             <br />
-            {edited ? <div><button>Update</button> <button onClick={cancleUpdate}>Cancle</button></div> : <button onClick={handleForm}>Simpan</button>}
+            {edited ? <div><button onClick={handleUpdate}>Update</button> <button onClick={cancleUpdate}>Cancle</button></div> : <button onClick={handleForm}>Simpan</button>}
         </div>
     )
 }
