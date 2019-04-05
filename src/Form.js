@@ -30,6 +30,12 @@ function ControlledForm() {
         setBiodata(newBiodata)
     }
 
+    const hapusBiodata = index => {
+        const newBiodata = [...biodata];
+        newBiodata.splice(index, 1);
+        setBiodata(newBiodata);
+    }
+
     useEffect(() => {
         return () => setEditBiodata()
     })
@@ -45,6 +51,7 @@ function ControlledForm() {
                             index={index}
                             biodata={biodata}
                             editBiodata={editBiodata}
+                            hapusBiodata={hapusBiodata}
                         />
                     )) : <p>No Biodata</p>
             }
@@ -54,10 +61,10 @@ function ControlledForm() {
 
 }
 
-function Display({ biodata, index, editBiodata }) {
+function Display({ biodata, index, editBiodata, hapusBiodata }) {
     return (
         <div key={index}>
-            <p>{biodata.nama + " | " + biodata.alamat + " | " + biodata.jk + " | " + biodata.status} <button onClick={() => editBiodata(index)}>Edit</button></p>
+            <p>{biodata.nama + " | " + biodata.alamat + " | " + biodata.jk + " | " + biodata.status} <button onClick={() => editBiodata(index)}>Edit</button> <button onClick={() => hapusBiodata(index)}>Hapus</button></p>
         </div>
     )
 }
