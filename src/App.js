@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 
+//components
+import ControlledForm from "./Form";
+
 function App() {
+
   const [todos, setTodos] = useState(
     [
       { text: "Makan", isCompleted: false },
@@ -38,18 +42,22 @@ function App() {
       <h2>Todo App</h2>
       <p>{todos.length} Todos</p>
       <div className="todo-list">
-        {todos.map((todo, index) => (
-          <Todo
-            key={index}
-            index={index}
-            todo={todo}
-            completeTodo={completeTodo}
-            unCompleted={unCompleted}
-            deleteTodo={deleteTodo}
-          />
-        ))}
+        {
+          todos.length > 0 ?
+            todos.map((todo, index) => (
+              <Todo
+                key={index}
+                index={index}
+                todo={todo}
+                completeTodo={completeTodo}
+                unCompleted={unCompleted}
+                deleteTodo={deleteTodo}
+              />
+            )) : <p>No Todos</p>}
         <br />
         <TodoForm addTodo={addTodo} />
+        <hr />
+        <ControlledForm />
       </div>
     </div>
   )
@@ -60,7 +68,7 @@ function App() {
 function Todo({ todo, index, completeTodo, unCompleted, deleteTodo }) {
   return (
     <div className="todo" key={index} style={{ textDecoration: todo.isCompleted ? "line-through" : "" }}>
-      {todo.text}
+      {todo.text + '  '}
       {
         todo.isCompleted ? <button onClick={() => unCompleted(index)}>UnCompleted</button> : <button onClick={() => completeTodo(index)}>Completed</button>
       }
