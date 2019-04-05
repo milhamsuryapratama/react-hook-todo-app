@@ -5,11 +5,11 @@ function ControlledForm() {
     const [biodata, setBiodata] = useState(
         [
             { nama: "Ilham", alamat: "Maron", jk: "L", status: "Janda" },
-            { nama: "Surya", alamat: "Norjo", jk: "L", status: "Duda" }
+            { nama: "Surya", alamat: "Norjo", jk: "P", status: "Duda" }
         ]
     )
 
-    const [eBiodata, setEditBiodata] = useState()
+    const [eBiodata, setEditBiodata] = useState();
 
     const addBiodata = data => {
         const newBiodata = [...biodata, data];
@@ -20,6 +20,10 @@ function ControlledForm() {
         const edtBiodata = [...biodata];
         setEditBiodata(edtBiodata[index]);
     }
+
+    useEffect(() => {
+        return () => setEditBiodata()
+    })
 
     return (
         <div>
@@ -49,20 +53,39 @@ function Display({ biodata, index, editBiodata }) {
     )
 }
 
-function Form({ addBiodata, eBiodata }) {
+function Form({ addBiodata, eBiodata, indexEdit }) {
 
     const [nama, setNama] = useState("");
     const [alamat, setAlamat] = useState("");
     const [jk, setJk] = useState("");
     const [status, setStatus] = useState("");
+    const [edited, setEdited] = useState(false);
+
+    const setVal = (eBiodata) => {
+        if (eBiodata === undefined) {
+            return;
+        } else {
+            setNama(eBiodata.nama);
+            setAlamat(eBiodata.alamat);
+            setJk(eBiodata.jk);
+            setStatus(eBiodata.status);
+            setEdited(true);
+        }
+    }
 
     useEffect(() => {
-        console.log(eBiodata)
+        setVal(eBiodata);
     }, [eBiodata])
 
-    const handleForm = e => {
-        e.preventDefault();
+    const cancleUpdate = () => {
+        setNama("");
+        setAlamat("");
+        setJk("");
+        setStatus("");
+        setEdited(false);
+    }
 
+    const handleForm = e => {
         const data = { nama, alamat, jk, status };
         addBiodata(data);
         setNama("");
@@ -72,7 +95,7 @@ function Form({ addBiodata, eBiodata }) {
     }
 
     return (
-        <form onSubmit={handleForm}>
+        <div>
             <input
                 type="text"
                 placeholder="Input Nama"
@@ -91,22 +114,24 @@ function Form({ addBiodata, eBiodata }) {
                 value="L"
                 name="jk"
                 onChange={e => setJk(e.target.value)}
+                checked={jk === "L"}
             /> L {" "}
             <input
                 type="radio"
                 value="P"
                 name="jk"
                 onChange={e => setJk(e.target.value)}
+                checked={jk === "P"}
             /> P
             <br />
             <select onChange={e => setStatus(e.target.value)}>
                 <option>-- Pilih Status --</option>
-                <option value="janda">Janda</option>
-                <option value="duda">Duda</option>
+                <option value="Janda" selected={status === "Janda" ? true : false}>Janda</option>
+                <option value="Duda" selected={status === "Duda" ? true : false}>Duda</option>
             </select>
             <br />
-            <button>Simpan</button>
-        </form>
+            {edited ? <div><button>Update</button> <button onClick={cancleUpdate}>Cancle</button></div> : <button onClick={handleForm}>Simpan</button>}
+        </div>
     )
 }
 
